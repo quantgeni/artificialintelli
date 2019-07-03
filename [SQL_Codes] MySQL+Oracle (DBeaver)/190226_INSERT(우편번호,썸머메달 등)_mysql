@@ -1,0 +1,20 @@
+-- 서울 우편번호 : zipcode_seoul
+create table (
+일련번호		int		primary key,
+우편번호		varchar(20),
+시도			varchar(20),		
+시군구			varchar(20),	
+읍면			varchar(30),	
+도로명			varchar(30)
+건물번호본번	int,
+건물번호부번	int,
+시군구용건물명	varchar(30),
+법정동명		varchar(30),
+리명			varchar(30),
+지번본번		int
+);
+
+-- 하계올림픽 메달리스트 : summer_medals
+create table (
+
+);
