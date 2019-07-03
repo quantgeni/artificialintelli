@@ -1,0 +1,151 @@
+1. 가상머신 이름은 OracleDBServer로 지정하고 
+설치 위치는 임의로 지정한다
+
+
+2. 호스트명은 OracleDBServer로 지정하고, 
+설치 후에 추가 네트워크를 설정한다
+
+[root@OracleDBServer ~]# vi /etc/hosts
+
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+
+192.168.74.129 OracleDBServer
+127.0.0.1 localhost
+
+
+3. 오라클 설치를 위한 필수 패키지등을 설치한다  
+           
+[root@OracleDBServer ~]# yum install -y bc flex libaio wget unzip
+
+(1/4): base/7/x86_64/group_gz                                                      | 166 kB  00:00:00
+(2/4): extras/7/x86_64/primary_db                                                  | 180 kB  00:00:00
+(3/4): updates/7/x86_64/primary_db                                                 | 2.5 MB  00:00:00
+(4/4): base/7/x86_64/primary_db                                                    | 6.0 MB  00:00:01
+Package libaio-0.3.109-13.el7.x86_64 already installed and latest version
+
+  Installing : m4-1.4.16-10.el7.x86_64                                                                1/5
+  Installing : flex-2.5.37-6.el7.x86_64                                                               2/5
+  Installing : wget-1.14-18.el7.x86_64                                                                3/5
+  Installing : bc-1.06.95-13.el7.x86_64                                                               4/5
+  Installing : unzip-6.0-19.el7.x86_64                                                                5/5
+  Verifying  : m4-1.4.16-10.el7.x86_64                                                                1/5
+  Verifying  : flex-2.5.37-6.el7.x86_64                                                               2/5
+  Verifying  : unzip-6.0-19.el7.x86_64                                                                3/5
+  Verifying  : bc-1.06.95-13.el7.x86_64                                                               4/5
+  Verifying  : wget-1.14-18.el7.x86_64                                                                5/5
+
+Installed:
+  bc.x86_64 0:1.06.95-13.el7         flex.x86_64 0:2.5.37-6.el7         unzip.x86_64 0:6.0-19.el7
+  wget.x86_64 0:1.14-18.el7
+
+Dependency Installed:
+  m4.x86_64 0:1.4.16-10.el7
+
+Complete!
+
+
+4. 오라클 데이터베이스 설치를 위한 전용 그룹 및 계정을 생성한다   
+[root@OracleDBServer ~]# groupadd oinstall
+[root@OracleDBServer ~]# groupadd dba
+[root@OracleDBServer ~]# useradd -g oinstall -G dba oracle
+[root@OracleDBServer ~]# passwd oracle
+oracle 사용자의 비밀 번호 변경 중
+새  암호: oracle
+새  암호 재입력: oracle
+passwd: 모든 인증 토큰이 성공적으로 업데이트 되었습니다.
+
+
+5. 오라클 데이터베이스를 설치하고 기본설정을 한다    
+(오라클 설치파일 압축해제 및 설치 전 스왑메모리 생성은 본 답안에서 제외)
+[root@OracleDBServer Disk1]# rpm -ivh oracle-xe-11.2.0-1.0.x86_64.rpm
+준비 중...                         ################################# [100%]
+/var/tmp/rpm-tmp.z5YjMk: line 257: [: 18446744073692774399: integer expression expected
+/var/tmp/rpm-tmp.z5YjMk: line 271: [: 18446744073692774399: integer expression expected
+Updating / installing...
+   1:oracle-xe-11.2.0-1.0             ################################# [100%]
+Executing post-install steps...
+
+You must run '/etc/init.d/oracle-xe configure' as the root user to configure the database.
+
+[root@OracleDBServer Disk1]# /etc/init.d/oracle-xe configure
+
+Specify the HTTP port that will be used for Oracle Application Express [8080]:9999
+
+/etc/init.d/oracle-xe: line 362: netstat: command not found
+Specify a port that will be used for the database listener [1521]:
+
+initial configuration: oracle
+Confirm the password: oracle
+
+Do you want Oracle Database 11g Express Edition to be started on boot (y/n) [y]:y
+
+Starting Oracle Net Listener...Done
+Configuring database...Done
+Starting Oracle Database 11g Express Edition instance...Done
+Installation completed successfully.
+
+
+
+
+6. 오라클 데이터베이스를 외부에서 접속 가능하도록 방화벽을 설정한다   
+[root@OracleDBServer ~]#  vi /etc/firewalld/zones/public.xml
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+  <short>Public</short>
+  <service name="ssh"/>
+  <service name="dhcpv6-client"/>
+  <port protocol="tcp" port="3306"/>
+  <port protocol="tcp" port="1521"/>
+</zone>
+
+[root@OracleDBServer ~]# firewall-cmd --reload
+success
+[root@OracleDBServer ~]#
+
+
+
+
+7. 오라클 데이터베이스를 이용해서 테이블스페이스와 사용자 계정을 생성한다   
+     계정명 : oracleuser, 암호 : 987654
+(sqlplus 접속 과정 및 connect, resource 권한 부여[grant] 생성 포함. 아래에서 숫자 2, 3은 
+직접 입력한 값이 아닌 다음줄 자동 표시된 내역임)
+
+
+[root@OracleDBServer ~]# . /u01/app/oracle/product/11.2.0/xe/bin/oracle_env.sh
+[root@OracleDBServer ~]# su oracle
+[oracle@OracleDBServer centos]$ sqlplus /nolog
+
+SQL*Plus: Release 11.2.0.2.0 Production on 금 3월 15 18:09:18 2019
+
+Copyright (c) 1982, 2011, Oracle.  All rights reserved.
+
+SQL> conn sys as sysdba
+Enter password: oracle
+Connected.
+SQL> create tablespace ts_orauser
+  2  datafile '/u01/app/oracle/oradata/XE/ts_orauser.dbf'
+  3  size 100M autoextend on next 50M;
+
+Tablespace created.
+
+SQL> create user oracleuser identified by 987654
+  2  default tablespace ts_orauser
+  3  temporary tablespace TEMP;
+
+User created.
+
+SQL> grant connect, resource to oracleuser;
+
+Grant succeeded.
+
+
+
+8. HR 예제 데이터베이스를 사용할 수 있도록 설정한다
+SQL> alter user hr identified by hr account unlock;
+
+User altered.
+
+SQL> @?/rdbms/admin/utlsampl.sql
+Disconnected from Oracle Database 11g Express Edition Release 11.2.0.2.0 - 64bit Production
+

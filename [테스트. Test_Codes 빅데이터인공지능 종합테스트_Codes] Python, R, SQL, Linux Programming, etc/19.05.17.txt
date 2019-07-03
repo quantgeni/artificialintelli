@@ -1,0 +1,76 @@
+1) HR 이라는 데이터베이스를 생성하세요 (5)
+풀이1) 파이썬 상에서
+from pymongo import MongoClient
+import csv
+
+client=MongoClient('mongodb://192.168.74.130:27017')
+db=client.HR
+
+풀이2) nosqlbooster 상에서
+use HR
+
+2) employees.csv 파일에 작성된 데이터들을 EMPLOYEES 라는 콜렉션에 저장하세요 (10)
+단, 저장 대상 데이터의 범위를 사원번호 100 ~ 105 까지로 한정한다.
+
+#=====================================================풀이1) 단순 삽입
+db.createCollection('EMPLOYEES')
+db.EMPLOYEES.insertMany([
+{'empid':100,'fname':'Steven','lname':'King' 'email':'SKING', 'phone':'515.123.4567', 'hire_date':'2003-06-17', 'jobid':'AD_PRES','salary':24000,'comm':'','mgr_id':'','dept_id':90},
+{'empid':101,'fname':'Neena','lname':'Kochhar','email':'NKOCHHAR','phone':'515.123.4568', 'hire_date':'2005-09-21','jobid':'AD_VP', 'salary':17000,'comm':'','mgr_id':100,'dept_id':90},
+{'empid':102,'fname':'Lex','lname':'De Haan','email':'LDEHAAN','phone':'515.123.4569','hire_date':'2001-01-13','jobid':'AD_VP', 'salary':17000,'comm':'','mgr_id':100,'dept_id':90},
+{'empid':103,'fname':'Alexander','lname':'Hunold','email':'AHUNOLD','phone':'590.423.4567','hire_date':'2006-01-03','jobid':'IT_PROG','salary':9000,'comm':'','mgr_id':102, 'dept_id':60},
+{'empid':104,'fname':'Bruce','lname':'Ernst','email':'BERNST','phone':'590.423.4568','hire_date':'2007-05-21','jobid':'IT_PROG','salary':6000,'comm':'','mgr_id':103,'dept_id':60},
+{'empid':105,'fname':'David','lname':'Austin','email':'DAUSTIN','phone':'590.423.4569','hire_date':'2005-06-25','jobid':'IT_PROG','salary':4800,'comm':'','mgr_id':103,'dept_id':60}
+])
+ 
+db.EMPLOYEES.find()
+
+from pymongo import MongoClient
+import csv
+
+#=====================================================풀이2) 파이썬 csv파일 임포트를 통한 처리 (풀다 말았음. 위 풀이1로 최종제출)
+from pymongo import MongoClient
+import csv
+
+client=MongoClient('mongodb://192.168.74.130:27017')
+db=client.HR
+coll=db.EMPLOYEES
+
+f = open('D:\william\\vpc\mongo\employees.csv', 'r', encoding='utf-8')
+rdr = csv.reader(f)
+
+emplst=[]
+for line in rdr:
+    cnt=int(len(line))
+    empdct = {}
+    empdct['EMPLOYEE_ID'] = line[cnt-cnt]
+    empdct['FIRST_NAME'] = line[cnt-cnt + 1]
+    empdct['LAST_NAME'] = line[cnt-cnt + 2]
+    empdct['EMAIL'] = line[cnt-cnt + 3]
+    empdct['PHONE_NUMBER'] = line[cnt-cnt + 4]
+    empdct['HIRE_DATE'] = line[cnt-cnt + 5]
+    empdct['JOB_ID'] = line[cnt-cnt + 6]
+    empdct['SALARY'] = line[cnt-cnt + 7]
+    empdct['COMMISSION_PCT'] = line[cnt-cnt + 8]
+    empdct['MANAGER_ID'] = line[cnt-cnt + 9]
+    empdct['DEPARTMENT_ID'] = line[cnt-cnt + 10]
+    coll.insert_one(empdct)
+    emplst.append(empdct)
+
+del emplst[0] #header 삭제
+
+#풀다 시간종료되어 풀이1로 제출함. 풀이2는 사번 100~105이 아닌 전체 데이터가 csv import되어 리스트에 딕셔너리 형태로 전부 들어간 상태 (106 이후 제거 필요)
+
+
+3) 사원 급여가 15,000 이상인 사원들의 사번, 성, 급여들을 조회하세요 (10)
+db.EMPLOYEES.find({sal:{$gte:15000}})
+
+4) 입사일이 2005-01-01 부터 2005-05-31 까지인 사원들을 조회하세요 (10)
+db.EMPLOYEES.find({hire_date:{$gte:'2005-01-01',$lte:'2005-05-31'}})
+
+5) 직급별 사원들의 급여 총액이 30,000 ~ 60,000 인 직급을 내림차순으로 조회하세요 (10)
+db.EMPLOYEES.find({salary:{$gte:30000,$lte:60000} }).sort({job_id:-1})
+
+
+
+

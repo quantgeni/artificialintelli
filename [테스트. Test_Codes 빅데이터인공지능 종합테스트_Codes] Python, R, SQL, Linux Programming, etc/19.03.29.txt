@@ -1,0 +1,50 @@
+★★★선제적으로 하기 입력
+. /u01/app/oracle/product/11.2.0/xe/bin/oracle_env.sh
+-------------------------------------------------------------------------------------------------------------------
+1. 암호가 tiger인 scott 계정의 Books, Customer, Orders 테이블을 BookStore.dmp 라는 파일이름으로 백업받으려 한다.  
+exp scott/tiger tables=Books,Customer,Orders file='BookStore.dmp'
+-------------------------------------------------------------------------------------------------------------------
+2. 백업받은 BookStore.dmp 라는 파일을 이용해서 scott 계정의 Books, Customer 테이블등을 hr 계정으로 복구하려 한다. 
+(사용자 단과 테이블 단을 분리하여 하기와 같이 3가지 케이스로 구분)
+
+2.1 사용자 단위 복구 (당초 'BookStore.dmp' 파일이 3개 테이블에 대한 백업이므로 통째로 scott 계정으로부터 hr 계정으로 import 시)
+imp scott/tiger fromuser=scott touser=hr file='BookStore.dmp'
+
+2.2 테이블 단위 복구 (2개 테이블에 대한 백업)
+imp scott/tiger@XE tables=Books,Customer fromuser=scott touser=hr file='BookStore.dmp'
+
+2.3. 테이블 단위 복구 (3개 테이블에 대한 백업)
+imp scott/tiger@XE tables=Books,Customer,Orders fromuser=scott touser=hr file='BookStore.dmp'
+
+
+3. SQL*Loader를 이용해서 HR계정의 데이터베이스에 iris 라는 테이블에 적재하라. 
+단, 테이블생성 스크립트와 control 파일의 스크립트를 제출한다.  
+
+3.1 테이블생성 스크립트
+
+CREATE TABLE iris(
+SepalLength	NUMBER,
+SepalWidth	NUMBER,
+PetalLength	NUMBER,
+PetalWidth	NUMBER,
+Species		VARCHAR2(75)
+);
+
+
+3.2. control 파일 스크립트 (trailing nullcols는 만약을 위해 삽입하였음)
+
+OPTIONS(skip=1)
+load data infile
+'/home/centos/iris.csv'
+into table iris
+fields terminated by ','
+optionally enclosed by '"'
+trailing nullcols
+(SepalLength,SepalWidth,PetalLength,PetalWidth,Species)
+
+
+3.3. sqlldr 명령으로 데이터 적재하기 (hr계정 기준) <- 참조사항으로 본 3번 답안에 추가하였음
+
+sqlldr control='/home/centos/iris.ctl' log='iris.log'
+Username:hr
+Password:hr

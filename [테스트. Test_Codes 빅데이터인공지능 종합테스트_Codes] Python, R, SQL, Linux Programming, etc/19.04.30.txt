@@ -1,0 +1,75 @@
+1. Python의 request 패키지와 BeautifulSoup을 이용해서
+   교보문고 베스트셀러 페이지에서 도서명과 저자, 가격을 
+   스크래핑해서 kyobobest.json으로 저장하세요.
+   (단, 보이는 페이지만 대상으로 한다)  
+    (http://www.kyobobook.co.kr/bestSellerNew/bestseller.laf?orderClick=d79)
+
+from bs4 import BeautifulSoup
+import requests
+import re
+from collections import OrderedDict
+import json
+
+headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36'}
+url='http://www.kyobobook.co.kr/bestSellerNew/bestseller.laf?orderClick=d79'
+
+res=requests.get(url,headers=headers)
+html=BeautifulSoup(res.text,'lxml')
+
+booklst=[]
+for datum in html.find_all("div",{"class":"detail"}):
+    bookOne=OrderedDict()
+    title = datum.find("div",{"class":"title"}).text.strip()
+    title = re.sub(r'\s{2,}', '', title)
+    title = re.sub(r'\n','',title)
+    bookOne['title']=title
+    author = datum.find("div",{"class":"author"}).text.strip().split('|')[0]
+    author = re.sub(r'\s{2,}', '', author)
+    author = re.sub(r'\n','',author)
+    bookOne['author']=author
+    price = datum.find("strong",{"class":"book_price"}).text.strip()
+    price = re.sub(r'\s{2,}', '', price)
+    price = re.sub(r'\n','',price)
+    bookOne['price']=price
+    booklst.append(bookOne)
+
+allBooks=OrderedDict()
+allBooks['kyobobooks']=booklst
+
+with open('data/kyobobest.json','w',encoding='utf-8') as f:
+    json.dump(allBooks,f,ensure_ascii=False,indent=2)
+
+
+2. Python의 request 패키지와 BeautifulSoup을 이용해서
+   daum 뉴스에서 2018. 4. 27일자 jtbc 뉴스 기사의 
+   제목과 요약을 스크래핑해서 jtbc20180427.csv로 저장하세요
+   (단, 보이는 페이지만 대상으로 한다)  
+from bs4 import BeautifulSoup
+import requests
+import datetime
+import csv
+
+headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36'}
+url='http://media.daum.net/cp/310'
+res=requests.get(url,headers=headers)
+html=BeautifulSoup(res.text,'lxml')
+
+daum_data=[]
+
+for econtent in html.select("div.cont_thumb"):
+    tit=econtent.select("strong.tit_thumb a.link_txt")
+    for etit in tit:
+        daum_data.append(etit.text.strip())
+    desc=econtent.select("div.desc_thumb span.link_txt")
+    for edesc in desc:
+        daum_data.append(edesc.text.strip())
+
+with open('data/jtbc20180427.csv','w',encoding='utf-8') as f:
+    writer=csv.writer(f)
+    writer.writerows(daum_data)
+
+
+
+
+
+

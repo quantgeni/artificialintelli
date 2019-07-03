@@ -1,0 +1,94 @@
+1. 사원emp들이 소속된 모든 부서deptno의 개수를 출력하는 함수를 작성하세요.  (15)
+     함수의 이름은 show_emp_dept_count 로 지정한다
+CREATE OR REPLACE FUNCTION show_emp_dept_count
+RETURN NUMBER
+IS 
+	deptcnt NUMBER;
+BEGIN 
+	SELECT 
+	COUNT(DISTINCT DEPARTMENT_ID)
+	INTO 
+	deptcnt
+	FROM EMPLOYEES;
+	RETURN	deptcnt;
+END;
+
+SELECT show_emp_dept_count FROM dual;
+
+
+2. ‘JONES’라는 사원의 사번, 직급, 급여를 출력하는 프로시져를 작성하세요.  (15)
+     프로시져의 이름은 show_emp_jones (-> show_emp_john으로 변경) 로 지정한다
+CREATE OR REPLACE PROCEDURE show_emp_john
+IS 
+	eid			EMPLOYEES.EMPLOYEE_ID%TYPE;
+	jid			EMPLOYEES.JOB_ID%TYPE;
+	slry		EMPLOYEES.SALARY%TYPE;
+	CURSOR	EMPINFO
+	IS
+	SELECT EMPLOYEE_ID,JOB_ID,SALARY FROM EMPLOYEES WHERE first_name='John';
+BEGIN 
+	OPEN EMPINFO;
+	LOOP
+		FETCH EMPINFO INTO eid,jid,slry;
+		EXIT WHEN EMPINFO%NOTFOUND;
+		dbms_output.put_line(eid||'/'||jid||'/'||slry);
+	END LOOP;
+	CLOSE EMPINFO;
+END;
+
+BEGIN
+	show_emp_john;
+END;
+
+3. 사원들의 사번, 이름, 직책, 부서명, 위치를 조회하는 프로시져를 작성하세요  (15)
+     프로시져의 이름은 show_emp_dept 로 지정한다
+CREATE OR REPLACE PROCEDURE show_emp_dept
+IS 
+	eid			EMPLOYEES.EMPLOYEE_ID%TYPE;
+	ename		EMPLOYEES.FIRST_NAME%TYPE;
+	jid			EMPLOYEES.JOB_ID%TYPE;
+	dname		DEPARTMENTS.DEPARTMENT_NAME%TYPE;
+	loc			LOCATIONS.CITY%TYPE;
+	CURSOR	EMPINFORM
+	IS
+	SELECT e.EMPLOYEE_ID,e.FIRST_NAME,e.JOB_ID,d.DEPARTMENT_NAME,l.CITY 
+	FROM EMPLOYEES e JOIN DEPARTMENTS d USING(DEPARTMENT_ID) JOIN LOCATIONS l USING(LOCATION_ID);
+BEGIN 
+	OPEN EMPINFORM;
+	LOOP
+		FETCH EMPINFORM INTO eid,ename,jid,dname,loc;
+		EXIT WHEN EMPINFORM%NOTFOUND;
+		dbms_output.put_line(eid||'/'||ename||'/'||jid'/'||dname'/'||loc);
+	END LOOP;
+	CLOSE EMPINFORM;
+END;
+
+
+BEGIN
+	show_emp_dept;
+END;
+
+4. 국어kor, 영어eng, 수학mat 점수를 입력하면 총점tot, 평균mean, 학점grd을 반환하는 함수를 작성하세요.    (15)
+     함수이름은 new_sj_data 로 지정한다.
+CREATE OR REPLACE FUNCTION new_sj_data(kor NUMBER, eng NUMBER, mat NUMBER)
+RETURN varchar2
+IS
+tot NUMBER;
+mean NUMBER;
+grd varchar(10);
+BEGIN
+	tot:=kor+eng+mat;
+	mean:=tot/3;
+	IF mean>=90 THEN grd:='수';
+	ELSIF mean>=80 THEN grd:='우'; 
+	ELSIF mean>=70 THEN grd:='미'; 
+	ELSIF mean>=60 THEN grd:='양';
+	ELSE grd:='가';
+	END IF;
+	
+	RETURN ('총점:  ' ||tot|| ', ' || '평균:  ' ||mean|| ', ' || '학점:  ' ||grd);
+END;
+
+SELECT new_sj_data(55, 67, 88) FROM dual;
+
+

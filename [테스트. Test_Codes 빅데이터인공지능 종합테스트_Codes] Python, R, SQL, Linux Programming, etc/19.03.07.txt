@@ -1,0 +1,61 @@
+-- 전체적으로, (중요하지 않을 수 있지만) 칼럼 영문명 대소문자 구분은 시험 문제지 데이터를 기준으로 함
+
+1. 커미션이 300, 500, 1400 인 사원의 사번, 이름, 커미션을 조회하시오.
+select 
+	empno 사번, 
+	ename 이름, 
+	round(comm) 커미션
+from EMP
+where round(comm) in (300,500,1400);
+
+-- 단, 본 답안에서 round() 함수가 필수는 아님
+
+
+2. 급여가 1200 에서 3500 사이가 아닌 사원의 사번, 이름, 월급여를 조회하시오.
+select
+	empno 사번, 
+	ename 이름, 
+	round(sal) 월급여
+from EMP
+where round(sal) not between 1200 and 3500;
+
+
+3. 월급여가 1000 이상인 사원만을 대상으로 부서별로 월급여 평균을 조회하시오. 
+   단, 평균급여가 2000 이상을 대상으로 한다.
+select 
+	deptno 부서번호, 
+	avg(round(sal)) 월급여평균
+from EMP 
+where round(sal)>=1000
+group by 1
+having 월급여평균>=2000;
+
+
+4. 사원명과 부서명을 조회하시오.
+select 
+	e.ename 사원명,
+	d.dname 부서명
+from EMP e 
+join DEPT d using (deptno);
+
+
+5. 커미션을 받는 사원의 이름, 커미션, 부서이름, 부서위치를 조회하시오.
+select 
+	e.ename 사원명,
+	e.comm 커미션,
+	d.dname 부서이름,
+	d.loc 부서위치
+from EMP e 
+join DEPT d using (deptno)
+where e.comm is not null;
+
+
+6. ALLEN과 같은 부서에 근무하는 사원의 이름, 부서번호를 조회하시오.
+단, 조회시 ALLEN은 제외하고 출력한다
+select 
+	ename 사원명,
+	deptno 부서번호
+from EMP
+where deptno=(select deptno from EMP where ename='ALLEN')
+and ename<>'ALLEN';
+

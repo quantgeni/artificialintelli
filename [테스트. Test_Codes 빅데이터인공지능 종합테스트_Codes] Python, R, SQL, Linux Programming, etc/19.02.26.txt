@@ -1,0 +1,55 @@
+1. 다음 요구사항 명세서에 따라 다음 개체entity에 대한 속성attribute을 추출하세요 (15)
+     회원 : 회원아이디, 비밀번호, 이름, 나이, 직업, 등급, 적립금
+     상품 : 상품번호, 상품명, 재고량, 단가
+     제조업체 : 제조업체명, 전화번호, 위치, 담당자
+
+
+2. 각 요구사항 문장의 동사를 기반으로 각 개체entity 간의 관계relation을 작성하세요 (10)
+	주문한다 : 상품 <- 회원 (즉, 회원이 상품을 주문한다)
+	공급한다 : 상품, 회원 <- 제조업체 (즉, 제조업체가 주문 상품을 주문 회원에게 공급한다)
+	
+ 
+3. 논리적 설계에 따라 각 개체들의 테이블을 작성하는 SQL문을 작성하세요 (25)
+	create table 회원 (
+	회원아이디	varchar(20)	primary key	not null,
+	비밀번호	varchar(20)	not null,
+	이름		varchar(10)	not null,
+	나이		int,
+	직업		varchar(20),
+	등급		varchar(10)	not null,
+	적립금		int			not null default 0,
+	check (나이 >= 0)
+	);
+
+	create table 상품 (
+	상품번호	varchar(20) primary key,
+	상품명		varchar(30),
+	재고량		int,
+	단가		int,
+	제조업체명	varchar(30),
+	공급일자	date,
+	공급량		int
+	);
+
+	create table 제조업체 (
+	제조업체명	varchar(30)	primary key,
+	전화번호	varchar(30),
+	위치		varchar(30),
+	담당자		varchar(10)
+	);
+
+
+	create table 주문 (
+		회원아이디	varchar(20)	not null,
+		상품번호	varchar(20),
+		주문번호	varchar(20),
+		주문수량	int,
+		배송지		varchar(30),
+		주문일자	date,
+		primary key (회원아이디, 상품번호),
+		foreign key (회원아이디)
+			references 회원 (회원아이디),
+		foreign key (상품번호)
+			references 상품 (상품번호)
+	);
+

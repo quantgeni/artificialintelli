@@ -1,0 +1,109 @@
+1) 단, 호스트명은 exam_hadoop으로 설정하고 /etc/hosts 파일의 내용을 출력한다 (5점)
+[root@exam-hadoop ~]# vi   /etc/hosts
+#127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+#::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+
+192.168.74.136  exam-hadoop
+127.0.0.1       localhost
+
+ 2) SELINUX 설정을 enforcing에서 disabled로 변경하고 출력 내용을 저장한다 (5점)
+[root@exam-hadoop ~]# sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
+
+ 3) JDK와 Hadoop을 설치하고 /etc/profile에 작성한 환경 변수 내용을 간략히 저장한다 (5점)
+[root@exam-hadoop ~]# vi    /etc/profile
+if [ $UID -gt 199 ] && [ "`/usr/bin/id -gn`" = "`/usr/bin/id -un`" ]; then
+    umask 002
+else
+    umask 022
+fi
+
+for i in /etc/profile.d/*.sh ; do
+    if [ -r "$i" ]; then
+        if [ "${-#*i}" != "$-" ]; then
+            . "$i"
+        else
+            . "$i" >/dev/null 2>&1
+        fi
+    fi
+done
+
+unset i
+unset -f pathmunge
+
+
+export JAVA_HOME=/usr/java/jdk1.8.0_212-amd64
+export HADOOP_HOME=/usr/share/hadoop
+export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
+
+ 4) hadoop 계정을 생성하고 HDFS에 hadoop 디렉토리를 생성하는 명령어를 간략히 저장한다(5점)
+[root@exam-hadoop bigdata]# useradd    hadoop
+[root@exam-hadoop bigdata]# passwd   hadoop
+hadoop 사용자의 비밀 번호 변경 중
+새  암호:
+잘못된 암호: 사전에 있는 단어를 기반으로 합니다
+잘못된 암호: 너무 간단함
+새  암호 재입력:
+passwd: 모든 인증 토큰이 성공적으로 업데이트 되었습니다.
+[root@exam-hadoop ~]# chown   -R   hadoop:hadoop   /usr/share/hadoop
+[root@exam-hadoop ~]# chmod   -R   755   /usr/share/hadoop
+
+5) 가상분산모드 설정파일 4개를 작성하고 작성내용을 간략히 저장한다 (10점)
+
+[hadoop@exam-hadoop hadoop]$ vi   core-site.xml
+<property>
+	<name>fs.defaultFS</name>
+	<value>hdfs://exam-hadoop:9000</value>
+</property>
+<property>
+	<name>hadoop.tmp.dir</name>
+	<value>/usr/share/hadoop/tmp</value>
+</property>
+
+
+[hadoop@exam-hadoop hadoop]$ vi   hdfs-site.xml
+<property>
+	<name>dfs.replication</name>     			
+	<value>1</value>  					 
+</property>
+<property>
+	<name>dfs.namenode.name.dir</name>
+	<value>/usr/share/hadoop/data/dfs/namenode</value>
+</property>
+<property>
+	<name>dfs.datanode.data.dir</name>
+	<value>/usr/share/hadoop/data/dfs/datanode</value>
+</property>
+<property>
+	<name>dfs.permission</name>
+	<value>false</value>
+</property>
+
+
+[hadoop@exam-hadoop hadoop]$ vi   yarn-site.xml
+<property>
+	<name>yarn.resourcemanager.hostname</name>
+	<value>exam-hadoop</value>
+</property>
+<property>
+	<name>yarn.nodemanager.aux-services</name>
+	<value>mapreduce_shuffle</value>
+</property>
+
+
+[hadoop@exam-hadoop hadoop]$ vi   mapred-site.xml
+<property>
+	<name>mapreduce.framework.name</name>
+	<value>yarn</value>
+</property>
+
+
+ 6) namenode를 포맷하고 정상적으로 생성되었는지 확인하고 결과를 저장한다 (10점)
+[hadoop@exam-hadoop hadoop]$ jps
+3664 NodeManager
+3106 NameNode
+3241 DataNode
+3562 ResourceManager
+3743 Jps
+
+7) 임의의 난수 100만 개를 24개의 맵을 이용해서 원주율을 계산하고 그 결과를 저장한다.
+    참고로 원주율의 소수점 이하 10자리는 3.1415926535 이다. (10점)
