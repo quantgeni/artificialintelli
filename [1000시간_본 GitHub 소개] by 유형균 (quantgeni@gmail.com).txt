@@ -1,0 +1,41 @@
+0. [1000시간_인공지능+데이터분석_끝판왕_스크린캡처] Python+R+AWS+Linux+Scraping+Crawling+SQL(MySQL,Oracle)+Hadoop(Hive,Spark,Cloudera)+VMWare+PredictiveModeling(로지스틱,Kmeans,Knearest,RandomForest,의사결정나무)+MachineLearning(머신러닝)+DeepLearning(딥러닝)
+-> 본 GitHub 계정(quantgeni) 오너가 직접 캡처한 빅데이터/인공지능 종합실습 스크린캡처 이미지 모음
+-> 용량 상 이슈 등으로 1,883개 이미지 중 일부만 업로드
+-> 참조사항일뿐, 본 이미지 캡처본으로 학습을 진행하는 것을 권장하지 않음
+
+1. [AWS_Linux_Codes] Amazon Web Service + Centos
+-> AWS <-> Centos6/7 연동. PuTTY를 통한 원격접속 (PuTTYGen 통한 private key 생성 등)
+-> Amazon Web Service 클라우드 플랫폼 <-> Linux프로그래밍을 통한 Oracle/MariaDB/Python/R 등 연동 (보안그룹 설정 [각 포트 열어주기] 필요)
+
+2. [NCS_데이터베이스DB_Ebook] Database, DBMS, SQL (MySQL, Oracle)
+-> DBMS, DB에 관한 교안 (기초 + 중급)
+
+3. [NCS_통계Statistics_Ebook] Statistical Analysis
+-> 통계 기반 모델링을 위한 교안 (기초 + 중급)
+
+4. [NoSQL_Codes] MongoDB (Booster GUI)
+-> NoSQL 실습 코드 / 특히 text 기반 처리/저장을 위한 MongoDB (Booster를 통한 GUI 코딩)
+
+5. [Python_Codes] Basic+Method+Class+Object
+-> 파이썬 프로그래밍 코드 (기초 + 중급)
+-> def함수 구축, 클래스 생성, 객체지향프로그래밍 (캡슐화, 상속, 오버라이딩/오버로딩 코딩 구현 등)
+
+6. [Python_Scraping+Crawling_Codes] Selenium, Beautiful Soup, Urllib, etc
+-> 스크래이핑/크롤리아 코드 (셀레니엄, 뷰티플수프4, 유알엘립 등을 활용한 자동화)
+
+7. [SQL_Codes] MySQL+Oracle (DBeaver)
+-> DBeaver GUI에 기반한 MySQL, Oracle DDL/DCL/DML 코드
+
+8. [예측모델링+머신러닝+딥러닝_Codes] Predictive Modeling + Machine Learning + Deep Learning
+-> Linear/Logistic Regression Modeling, Decision Tree Modeling, K-Means Modeling, K-Nearest Neighbor Modeling 등
+-> 머신러닝, 딥러닝 (인공신경망, 합성곱신경망[CNN - 패딩, Max/Avg 풀링 등], 순환신경망[RNN], LSTM, 트랜스포머 Attention 등)
+
+9. [하둡Hadoop+하이브Hive_Codes] Hadoop, Hive, Cloudera, Spark
+-> Linux 기반 하둡 프로그래밍 (+ Hive QL)
+-> Node Manager, Name Node, Secondary Name Node, Resource Manager, Data Node, etc.
+-> Cloudera GUI에 기반한 HQL + Spark (Cloudera 설치 포함 - 숙련도에 따라 빌드업 환경 구축에 있어 약 1~3시간 소요)
+
+10. [테스트. Test_Codes 빅데이터인공지능 종합테스트_Codes] Python, R, SQL, Linux Programming, etc
+
+11. 기타(이미지_xxx) 
+-> 무시해도 됨
