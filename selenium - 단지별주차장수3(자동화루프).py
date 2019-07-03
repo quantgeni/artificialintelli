@@ -64,11 +64,6 @@ try:
         id=tr.get_attribute('id') #리스트가 되진 않음 ㅎㅎ
     #print(id) #마지막 id값만 프린트
 
-    # 아파트목록 마지막 id값 알아보기2
-
-
-    # 아파트목록 마지막 id값 알아보기3
-
     for i in range(1,int(id)+1):
         aptno='//tr[@id="%s"]' %(i) #<- 오, 유의!!!
         chrome.find_element_by_xpath(aptno).click()
