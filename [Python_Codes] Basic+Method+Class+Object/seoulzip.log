@@ -1,0 +1,38 @@
+
+SQL*Loader: Release 11.2.0.2.0 - Production on 목 3월 28 09:31:03 2019
+
+Copyright (c) 1982, 2009, Oracle and/or its affiliates.  All rights reserved.
+
+Control File:   /home/centos/seoulzip.ctl
+Data File:      /home/centos/seoul_zip.csv
+  Bad File:     /home/centos/seoul_zip.bad
+  Discard File:  none specified
+ 
+ (Allow all discards)
+
+Number to load: ALL
+Number to skip: 1
+Errors allowed: 50
+Bind array:     64 rows, maximum of 256000 bytes
+Continuation:    none specified
+Path used:      Conventional
+
+Table ZIPCODE_SEOUL, loaded from every logical record.
+Insert option in effect for this table: INSERT
+TRAILING NULLCOLS option in effect
+
+   Column Name                  Position   Len  Term Encl Datatype
+------------------------------ ---------- ----- ---- ---- ---------------------
+CODE                                FIRST     *   ,  O(") CHARACTER            
+SIDO                                 NEXT     *   ,  O(") CHARACTER            
+SIGUNGU                              NEXT     *   ,  O(") CHARACTER            
+EUPMYEON                             NEXT     *   ,  O(") CHARACTER            
+DORONAME                             NEXT     *   ,  O(") CHARACTER            
+BUILDBON                             NEXT     *   ,  O(") CHARACTER            
+BUILDBU                              NEXT     *   ,  O(") CHARACTER            
+SIGUNGUBUILD                         NEXT     *   ,  O(") CHARACTER            
+BEOBJD                               NEXT     *   ,  O(") CHARACTER            
+RINAME                               NEXT     *   ,  O(") CHARACTER            
+JIBEONBON                            NEXT     *   ,  O(") CHARACTER            
+
+SQL*Loader-601: For INSERT option, table must be empty.  Error on table ZIPCODE_SEOUL
